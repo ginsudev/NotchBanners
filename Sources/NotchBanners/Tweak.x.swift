@@ -15,7 +15,12 @@ struct tweak: HookGroup {}
 class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestination> {
     typealias Group = tweak
 
-    func postNotificationRequest(_ request: NCNotificationRequest) {
+    func postNotificationRequest(_ request: AnyObject?) {
+        
+        guard let request = request as? NCNotificationRequest else {
+            orig.postNotificationRequest(request)
+            return
+        }
 
         //Create an array consisting of the open action, as well as app-specific actions.
         var actions = [NCNotificationAction]()

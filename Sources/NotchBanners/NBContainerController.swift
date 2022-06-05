@@ -94,6 +94,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
             dismiss = false
         }
 
+        //Expand the banner
         if bannerController!.view.frame.origin.y > 50 {
             if bannerController!.bannerView.hasActions && !isExpanded {
                 t_frame.origin.y = 0.0

@@ -31,11 +31,17 @@ class NBIconLabelView: UIView {
         //Constraints
         iconView.widthAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         iconView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-        iconView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-
         headerLabel.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         headerLabel.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-        headerLabel.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: 5.0).isActive = true
+
+        if UIApplication.shared.userInterfaceLayoutDirection == .leftToRight {
+            iconView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+            headerLabel.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: 5.0).isActive = true
+        } else {
+            iconView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+            headerLabel.rightAnchor.constraint(equalTo: iconView.leftAnchor, constant: -5.0).isActive = true
+            headerLabel.textAlignment = .right
+        }
     }
     
     required init?(coder: NSCoder) {
