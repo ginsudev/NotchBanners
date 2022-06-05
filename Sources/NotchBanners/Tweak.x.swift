@@ -21,7 +21,7 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
             orig.postNotificationRequest(request)
             return
         }
-
+        
         //Create an array consisting of the open action, as well as app-specific actions.
         var actions = [NCNotificationAction]()
         actions.append(request.defaultAction)
@@ -47,7 +47,7 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
         let content = NBContent(header: request.content.header,
                                 title: request.content.title,
                                 subtitle: request.content.subtitle,
-                                body: request.content.message,
+                                body: request.options.contentPreviewSetting != 2 ? request.content.message : request.content.header,
                                 icon: request.content.icon,
                                 actions: actions,
                                 dismissAutomatically: request.options.dismissAutomatically)

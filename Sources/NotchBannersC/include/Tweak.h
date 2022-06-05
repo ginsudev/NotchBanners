@@ -29,6 +29,7 @@
 
 @interface NCNotificationOptions : NSObject
 @property (nonatomic,readonly) BOOL dismissAutomatically;
+@property (nonatomic,readonly) unsigned long long contentPreviewSetting;
 @end
 
 @interface NCNotificationContent : NSObject
