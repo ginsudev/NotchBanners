@@ -10,6 +10,8 @@ import NotchBannersC
 
 class NBBannerWindow: SBFTouchPassThroughWindow {
     var containerController: NBContainerController!
+    var isFrontMost = true
+    var isFullyPresented = false
     
     init(screen arg1: UIScreen, debugName arg2: String, content data: NBContent) {
         super.init(screen: arg1, debugName: arg2)

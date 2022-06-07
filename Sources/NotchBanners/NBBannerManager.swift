@@ -10,30 +10,49 @@ import NotchBannersC
 
 class NBBannerManager: NSObject {
     static let sharedInstance = NBBannerManager()
-    var window: NBBannerWindow!
+    var activeWindows = [NBBannerWindow]()
     var statusBarHeight = (UIWindow().windowScene?.statusBarManager?.statusBarHeight ?? 15.0) - 15.0
-    var isActive = false
     
     func createBannerWindow(withContent content: NBContent) {
-        window = NBBannerWindow(screen: UIScreen.main, debugName: "NotchBanners", content: content)
+        
+        for window in activeWindows {
+            if window.isFullyPresented {
+                dismissBannerWindow(window)
+            } else {
+                killWindow(window)
+            }
+        }
+        
+        let window = NBBannerWindow(screen: UIScreen.main, debugName: "NotchBanners", content: content)
         window.windowLevel = .statusBar + 999999
+        activeWindows.append(window)
         window.makeKeyAndVisible()
-        isActive = true
     }
     
-    func dismissBannerWindow() {
+    @objc func dismissAllWindows() {
+        for window in activeWindows {
+            if window.isFullyPresented {
+                dismissBannerWindow(window)
+            } else {
+                killWindow(window)
+            }
+        }
+        TLAlert._stopAllAlerts()
+    }
+    
+    func dismissBannerWindow(_ window: NBBannerWindow) {
         UIView.animate(withDuration: 0.3, delay: 0.0, animations: {
-            self.window.transform = CGAffineTransform(translationX: 0, y: -self.window.frame.height)
+            window.transform = CGAffineTransform(translationX: 0, y: -window.frame.height)
         }, completion: { action in
-            self.killWindow()
+            self.killWindow(window)
         })
     }
     
-    func killWindow() {
+    func killWindow(_ window: NBBannerWindow) {
         window.isHidden = true
         window.windowScene = nil
         TLAlert._stopAllAlerts()
-        isActive = false
+        activeWindows = activeWindows.filter {$0 != window}
     }
     
     func thudSound() {
@@ -46,7 +65,10 @@ class NBBannerManager: NSObject {
         action.actionRunner.executeAction(action, fromOrigin: "BulletinDestinationBanner", endpoint: nil, withParameters: parameters, completion: { finished in
             DispatchQueue.main.async {
                 NBBannerManager.sharedInstance.thudSound()
-                NBBannerManager.sharedInstance.dismissBannerWindow()
+                
+                for window in self.activeWindows {
+                    NBBannerManager.sharedInstance.dismissBannerWindow(window)
+                }
                 TLAlert._stopAllAlerts()
             }
         })

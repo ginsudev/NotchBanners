@@ -41,11 +41,12 @@ class NBBannerController: UIViewController {
                                   title: content.title,
                                   subtitle: content.subtitle,
                                   body: content.body,
-                                  iconImage: content.icon,
+                                  iconImage: content.icon ?? UIImage(systemName: "app.badge.fill")!,
                                   actions: content.actions)
         view.addSubview(bannerView)
         
-        let frame_special_cache = NBBannerManager.sharedInstance.getOptimalBannerFrame(actionCount: currentContentBlob.actions.dropFirst().count)
+        let frame_special_cache = NBBannerManager.sharedInstance.getOptimalBannerFrame(actionCount: currentContentBlob.actions?.dropFirst().count ?? 0)
+        
         bannerView.widthAnchor.constraint(equalToConstant: frame_special_cache.width).isActive = true
         bannerView.centerXAnchor.constraint(equalTo: self.parent!.view.centerXAnchor).isActive = true
         bannerView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -54,22 +55,13 @@ class NBBannerController: UIViewController {
         self.view.transform = CGAffineTransform(translationX: 0, y: -self.view.frame.height)
         UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.4, options: .curveEaseInOut, animations: {
             self.view.transform = .identity
+        }, completion: { action in
+            if let currentWindow = NBBannerManager.sharedInstance.activeWindows.first(where: {$0.isFrontMost}) {
+                currentWindow.isFullyPresented = true
+            }
         })
         
         timerConfig(startTimer: true)
-    }
-    
-    func dismissBannerAndCreateNewWithContent(_ content: NBContent?) {
-        //Animate out and create new banner
-        UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.4, options: .curveEaseInOut, animations: {
-            self.view.transform = CGAffineTransform(translationX: 0, y: -self.view.frame.height)
-        }, completion: { action in
-            self.bannerView.removeFromSuperview()
-            
-            if let content = content {
-                self.createBanner(withContent: content)
-            }
-        })
     }
     
     func timerConfig(startTimer start: Bool) {
@@ -90,6 +82,6 @@ class NBBannerController: UIViewController {
     }
     
     @objc func postWindowKillRequest() {
-        NBBannerManager.sharedInstance.dismissBannerWindow()
+        NBBannerManager.sharedInstance.dismissAllWindows()
     }
 }

@@ -6,7 +6,6 @@
 @interface TLAlert : NSObject
 + (instancetype)alertWithConfiguration:(id)arg1;
 - (void)play;
-- (void)stop;
 + (BOOL)_stopAllAlerts;
 @end
 
@@ -51,7 +50,6 @@
 @end
 
 @interface SBNotificationBannerDestination : NSObject
-- (void)dismissPresentedBannerAnimated:(BOOL)arg1 forceIfSticky:(BOOL)arg2 ;
 - (void)_test_dismissNotificationRequest:(NCNotificationRequest *)arg1;
 @end
 

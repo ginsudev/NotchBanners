@@ -10,12 +10,12 @@ import NotchBannersC
 
 //A collection of data needed for the construction of an NBBanner*.
 struct NBContent {
-    var header: String?
-    var title: String?
-    var subtitle: String?
-    var body: String?
+    var header: String!
+    var title: String!
+    var subtitle: String!
+    var body: String!
     var icon: UIImage!
-    var actions: [NCNotificationAction]!
+    var actions: [NCNotificationAction]?
     var dismissAutomatically: Bool!
 }
 

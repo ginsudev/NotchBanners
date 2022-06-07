@@ -21,14 +21,18 @@ class NBBannerView: UIStackView {
     private var insets = 10.0
     var hasActions = false
     
-    init(frame: CGRect, header headerText: String?, title titleText: String?, subtitle subtitleText: String?, body bodyText: String?, iconImage icon: UIImage, actions actionList: [NCNotificationAction]) {
+    init(frame: CGRect, header headerText: String, title titleText: String, subtitle subtitleText: String, body bodyText: String, iconImage icon: UIImage, actions actionList: [NCNotificationAction]?) {
         super.init(frame: frame)
         
         let tapG = UITapGestureRecognizer(target: self, action: #selector(executeTapAction))
         tapG.numberOfTapsRequired = 1
         addGestureRecognizer(tapG)
         
-        openAppAction = actionList.first!
+        
+        if actionList != nil {
+            openAppAction = actionList?.first
+        }
+        
         self.backgroundColor = localSettings.colours.first
         self.axis = .vertical
         self.alignment = .center
@@ -39,25 +43,26 @@ class NBBannerView: UIStackView {
         self.layer.cornerRadius = 24
         self.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         
-        let droppedActionList = actionList.dropFirst()
-        if !droppedActionList.isEmpty {
-            hasActions = true
-            spacerTopTop = UIView()
-            spacerTopTop.translatesAutoresizingMaskIntoConstraints = false
-            self.addArrangedSubview(spacerTopTop)
-            //Constraints
-            spacerTopTop.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-            spacerTopTop.heightAnchor.constraint(equalToConstant: NBBannerManager.sharedInstance.statusBarHeight).isActive = true
-        }
-        
-        for action in droppedActionList {
-            let actionButton = action.behavior == 1 ? NBTextInputActionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action) : NBActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
+        if let droppedActionList = actionList?.dropFirst() {
+            if !droppedActionList.isEmpty {
+                hasActions = true
+                spacerTopTop = UIView()
+                spacerTopTop.translatesAutoresizingMaskIntoConstraints = false
+                self.addArrangedSubview(spacerTopTop)
+                //Constraints
+                spacerTopTop.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+                spacerTopTop.heightAnchor.constraint(equalToConstant: NBBannerManager.sharedInstance.statusBarHeight).isActive = true
+            }
             
-            actionButton.translatesAutoresizingMaskIntoConstraints = false
-            self.addArrangedSubview(actionButton)
-            //Constraints
-            actionButton.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
-            actionButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            for action in droppedActionList {
+                let actionButton = action.behavior == 1 ? NBTextInputActionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action) : NBActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
+                
+                actionButton.translatesAutoresizingMaskIntoConstraints = false
+                self.addArrangedSubview(actionButton)
+                //Constraints
+                actionButton.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
+                actionButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            }
         }
         
         spacerTop = UIView()
@@ -67,7 +72,7 @@ class NBBannerView: UIStackView {
         spacerTop.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         spacerTop.heightAnchor.constraint(equalToConstant: NBBannerManager.sharedInstance.statusBarHeight).isActive = true
 
-        if headerText?.count ?? 0 > 0 {
+        if headerText.count > 0 {
             hasTopText = true
             
             headerView = NBIconLabelView(frame: CGRect(x: 0, y: 0, width: bounds.width, height: 20), string: headerText, iconImage: icon)
@@ -80,12 +85,12 @@ class NBBannerView: UIStackView {
             headerView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: insets).isActive = true
         }
         
-        if (titleText?.count ?? 0 > 0 || subtitleText?.count ?? 0 > 0) {
+        if (titleText.count > 0 || subtitleText.count > 0) {
             if hasTopText == true {
                 titleLabel = UILabel()
                 titleLabel.textColor = localSettings.colours[1]
                 titleLabel.font = .systemFont(ofSize: 14)
-                titleLabel.text = (titleText?.count ?? 0 > 0) ? titleText : subtitleText
+                titleLabel.text = (titleText.count > 0) ? titleText : subtitleText
                 titleLabel.translatesAutoresizingMaskIntoConstraints = false
                 self.addArrangedSubview(titleLabel)
                 
@@ -94,7 +99,7 @@ class NBBannerView: UIStackView {
                 titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: insets).isActive = true
             } else {
                 hasTopText = true
-                headerView = NBIconLabelView(frame: CGRect(x: 0, y: 0, width: bounds.width, height: 20), string: titleText ?? subtitleText, iconImage: icon)
+                headerView = NBIconLabelView(frame: CGRect(x: 0, y: 0, width: bounds.width, height: 20), string: (titleText.count > 0) ? titleText : subtitleText, iconImage: icon)
                 headerView.translatesAutoresizingMaskIntoConstraints = false
                 self.addArrangedSubview(headerView)
 
@@ -105,7 +110,7 @@ class NBBannerView: UIStackView {
             }
         }
         
-        if bodyText?.count ?? 0 > 0 {
+        if bodyText.count > 0 {
             bodyLabel = UILabel()
             bodyLabel.textColor = localSettings.colours[1]
             bodyLabel.font = .systemFont(ofSize: 12)
@@ -142,7 +147,7 @@ class NBBannerView: UIStackView {
     @objc func executeTapAction() {
         openAppAction.actionRunner.executeAction(openAppAction, fromOrigin: nil, endpoint: nil, withParameters: openAppAction.behaviorParameters, completion: { finished in
             DispatchQueue.main.async {
-                NBBannerManager.sharedInstance.dismissBannerWindow()
+                NBBannerManager.sharedInstance.dismissAllWindows()
             }
         })
     }

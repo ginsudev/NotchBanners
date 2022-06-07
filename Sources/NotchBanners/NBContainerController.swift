@@ -33,7 +33,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
         super.viewWillAppear(animated)
         
         //Setup initial frame
-        let initFrame = NBBannerManager.sharedInstance.getOptimalBannerFrame(actionCount: contentBlob.actions.dropFirst().count)
+        let initFrame = NBBannerManager.sharedInstance.getOptimalBannerFrame(actionCount: contentBlob.actions?.dropFirst().count ?? 0)
         bannerController!.view.frame = CGRect(x: view.frame.width/2 - initFrame.width/2,
                                               y: initFrame.origin.y,
                                               width: initFrame.width,
@@ -76,7 +76,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
     }
     
     func updateFrameToFitInBounds() {
-        let minY = bannerController!.bannerView.hasActions ? -(bannerController!.bannerView.arrangedSubviews[contentBlob.actions.count].frame.origin.y) : 0.0
+        let minY = bannerController!.bannerView.hasActions ? -(bannerController!.bannerView.arrangedSubviews[contentBlob.actions?.count ?? 0].frame.origin.y) : 0.0
         let offsetY = 25.0
         var t_frame = bannerController!.view.frame
         var dismiss = false
@@ -121,7 +121,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
                 return
             }
 
-            self.bannerController!.postWindowKillRequest()
+            //NBBannerManager.sharedInstance.dismissAllWindows()
         })
     }
     

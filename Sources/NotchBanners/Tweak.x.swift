@@ -26,10 +26,13 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
         var actions = [NCNotificationAction]()
         actions.append(request.defaultAction)
 
-        if let appSpecificActionArray = request.supplementaryActions.first?.value as? [AnyObject] {
-            for action in appSpecificActionArray {
-                if let action = action as? NCNotificationAction {
-                    actions.append(action)
+        //MARK: - Crash here (Possibly fixed, need to test)..
+        if request.supplementaryActions != nil {
+            if let appSpecificActionArray = request.supplementaryActions.first?.value as? [AnyObject] {
+                for action in appSpecificActionArray {
+                    if let action = action as? NCNotificationAction {
+                        actions.append(action)
+                    }
                 }
             }
         }
@@ -44,23 +47,15 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
         }
 
         //Create an NBContent object containing important data needed for the initialisation of our own banner system.
-        let content = NBContent(header: request.content.header,
-                                title: request.content.title,
-                                subtitle: request.content.subtitle,
-                                body: request.options.contentPreviewSetting != 2 ? request.content.message : request.content.header,
-                                icon: request.content.icon,
+        let content = NBContent(header: request.content.header ?? "",
+                                title: request.content.title ?? "",
+                                subtitle: request.content.subtitle ?? "",
+                                body: request.options.contentPreviewSetting != 2 ? (request.content.message ?? "") : (request.content.header ?? ""),
+                                icon: request.content.icon ?? UIImage(systemName: "app.badge.fill"),
                                 actions: actions,
                                 dismissAutomatically: request.options.dismissAutomatically)
 
-//        /* If a banner is already presented, we will dismiss that banner but reuse it's NBBannerWindow object to present a new banner.
-//        Else, we'll create an entirely new NBBannerWindow object to present our banner. */
-//        if NBBannerManager.sharedInstance.isActive {
-//            NBBannerManager.sharedInstance.window.containerController.bannerController!.dismissBannerAndCreateNewWithContent(content)
-//        } else {
-//            NBBannerManager.sharedInstance.createBannerWindow(withContent: content)
-//        }
-        
-        //Straight up creating a new window instance fixes an issue where some banners may not appear if >= 1 is recieved at the same time. Will need to investigate the issue further, soon..
+        //Create & present the banner with our content.
         NBBannerManager.sharedInstance.createBannerWindow(withContent: content)
 
         /* Finally, create a ToneLibrary Alert (TLAlert) with the TLAlertConfiguration property
@@ -71,18 +66,6 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
             tl_alert?.play()
         }
     }
-
-//    //orion: new
-//    func getCraneContainerForNotificationRequest(_ request: NCNotificationRequest) -> String? {
-//        guard let craneManager = CraneManager_NotchBanners.sharedManager() else {
-//            return nil
-//        }
-//
-//        let context: NSDictionary = request.context! as NSDictionary
-//        let sectionIdentifier: String = request.sectionIdentifier
-//
-//        return craneManager.containerNameToDisplayInNotification(withUserInfoOrContext: context as? [AnyHashable : Any], ofApplicationWithIdentifier: sectionIdentifier)
-//    }
 }
 
 //MARK: - Preferences
