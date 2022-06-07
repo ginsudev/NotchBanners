@@ -1,6 +1,5 @@
 import Orion
 import NotchBannersC
-import AVFoundation
 
 struct localSettings {
     static var isEnabled: Bool!
@@ -26,7 +25,6 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
         var actions = [NCNotificationAction]()
         actions.append(request.defaultAction)
 
-        //MARK: - Crash here (Possibly fixed, need to test)..
         if request.supplementaryActions != nil {
             if let appSpecificActionArray = request.supplementaryActions.first?.value as? [AnyObject] {
                 for action in appSpecificActionArray {

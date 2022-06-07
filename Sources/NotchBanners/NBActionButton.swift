@@ -16,12 +16,11 @@ class NBActionButton: UIButton {
         
         mainAction = action
         
+        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[1]
+        
         backgroundColor = localSettings.colours[2]
         clipsToBounds = true
         layer.cornerRadius = 14
-                
-        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[1]
-
         setTitle(action.title, for: .normal)
         setTitleColor(colour, for: .normal)
         titleLabel?.textAlignment = .center

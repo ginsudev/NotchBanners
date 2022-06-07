@@ -16,14 +16,12 @@ class NBTextInputActionView: UITextField, UITextFieldDelegate {
         
         mainAction = action
         
-        delegate = self
+        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[1]
         
+        delegate = self
         backgroundColor = localSettings.colours[2]
         clipsToBounds = true
         layer.cornerRadius = 14
-        
-        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[1]
-        
         attributedPlaceholder = NSAttributedString(string: action.title, attributes: [NSAttributedString.Key.foregroundColor: colour])
         textColor = colour
         textAlignment = .center
