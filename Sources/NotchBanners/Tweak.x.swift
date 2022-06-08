@@ -21,9 +21,17 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
             return
         }
         
+        guard !UserDefaults.standard.bool(forKey: "NotchBanners_DND") else {
+            target._test_dismiss(request)
+            return
+        }
+        
         //Create an array consisting of the open action, as well as app-specific actions.
         var actions = [NCNotificationAction]()
-        actions.append(request.defaultAction)
+        
+        if let defaultAction = request.defaultAction {
+            actions.append(defaultAction)
+        }
 
         if request.supplementaryActions != nil {
             if let appSpecificActionArray = request.supplementaryActions.first?.value as? [AnyObject] {
@@ -63,6 +71,14 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
             let tl_alert = TLAlert(configuration: alertConfig)
             tl_alert?.play()
         }
+    }
+}
+
+class DNDNotificationsService_Hook: ClassHook<DNDNotificationsService> {
+    
+    func stateService(_ arg1: AnyObject, didReceiveDoNotDisturbStateUpdate update: DNDStateUpdate) {
+        orig.stateService(arg1, didReceiveDoNotDisturbStateUpdate: update)
+        UserDefaults.standard.set((update.state.isActive && update.state.suppressionState == 1), forKey: "NotchBanners_DND")
     }
 }
 

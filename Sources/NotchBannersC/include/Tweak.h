@@ -1,5 +1,17 @@
 #import <UIKit/UIKit.h>
 
+@interface DNDState : NSObject
+@property (nonatomic,readonly) unsigned long long suppressionState;
+@property (getter=isActive,nonatomic,readonly) BOOL active;
+@end
+
+@interface DNDStateUpdate : NSObject
+@property (nonatomic,copy,readonly) DNDState * state;
+@end
+
+@interface DNDNotificationsService : NSObject
+@end
+
 @interface TLAlertConfiguration : NSObject
 @end
 
