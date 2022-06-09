@@ -16,7 +16,7 @@ class NBBannerView: UIStackView {
     private var spacerTop: UIView!
     private var spacerTopTop: UIView!
     private var spacerBottom: UIView!
-    private var openAppAction: NCNotificationAction!
+    private var openAppAction: NCNotificationAction?
     private var hasTopText = false
     private var insets = 10.0
     var hasActions = false
@@ -27,7 +27,6 @@ class NBBannerView: UIStackView {
         let tapG = UITapGestureRecognizer(target: self, action: #selector(executeTapAction))
         tapG.numberOfTapsRequired = 1
         addGestureRecognizer(tapG)
-        
         
         if actionList != nil {
             openAppAction = actionList?.first
@@ -145,7 +144,7 @@ class NBBannerView: UIStackView {
     }
     
     @objc func executeTapAction() {
-        openAppAction.actionRunner.executeAction(openAppAction, fromOrigin: nil, endpoint: nil, withParameters: openAppAction.behaviorParameters, completion: { finished in
+        openAppAction?.actionRunner.executeAction(openAppAction, fromOrigin: nil, endpoint: nil, withParameters: openAppAction?.behaviorParameters, completion: { finished in
             DispatchQueue.main.async {
                 NBBannerManager.sharedInstance.dismissAllWindows()
             }
