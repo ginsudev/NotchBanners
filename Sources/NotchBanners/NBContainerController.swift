@@ -13,14 +13,16 @@ class NBContainerController: SBFTouchPassThroughViewController {
     var contentBlob: NBContent!
     var isExpanded = false
     var isTyping = false
+    var associatedWindow: NBBannerWindow!
     
     //Init
-    convenience init(data content: NBContent) {
-        self.init(nibName: nil, bundle: nil, data: content)
+    convenience init(data content: NBContent, associatedWindow window: NBBannerWindow) {
+        self.init(nibName: nil, bundle: nil, data: content, associatedWindow: window)
     }
     
-    init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?, data content: NBContent) {
+    init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?, data content: NBContent, associatedWindow window: NBBannerWindow) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        associatedWindow = window
         contentBlob = content
     }
     

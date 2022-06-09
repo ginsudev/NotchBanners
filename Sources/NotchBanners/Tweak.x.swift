@@ -7,6 +7,7 @@ struct localSettings {
     static var colours: [UIColor]!
     static var customWidth: Bool!
     static var customWidthValue: Double!
+    static var dismissTime: Double!
 }
 
 struct tweak: HookGroup {}
@@ -103,6 +104,7 @@ func readPrefs() {
                              UIColor(hexString: dict.value(forKey: "buttonColour") as? String ?? "#7F7F7FFF")]
     localSettings.customWidth = dict.value(forKey: "customWidth") as? Bool ?? false
     localSettings.customWidthValue = dict.value(forKey: "customWidthValue") as? Double ?? 209.0
+    localSettings.dismissTime = dict.value(forKey: "dismissTime") as? Double ?? 5.0
     
 }
 

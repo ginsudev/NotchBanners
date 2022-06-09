@@ -51,6 +51,7 @@ class NBBannerManager: NSObject {
     func killWindow(_ window: NBBannerWindow) {
         window.isHidden = true
         window.windowScene = nil
+        window.containerController.bannerController!.timer.invalidate()
         TLAlert._stopAllAlerts()
         activeWindows = activeWindows.filter {$0 != window}
     }

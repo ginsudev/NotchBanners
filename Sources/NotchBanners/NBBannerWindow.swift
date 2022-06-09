@@ -16,7 +16,7 @@ class NBBannerWindow: SBFTouchPassThroughWindow {
     init(screen arg1: UIScreen, debugName arg2: String, content data: NBContent) {
         super.init(screen: arg1, debugName: arg2)
         
-        containerController = NBContainerController(data: data)
+        containerController = NBContainerController(data: data, associatedWindow: self)
         containerController.view.frame = UIScreen.main.bounds
         self.rootViewController = containerController
     }

@@ -9,7 +9,7 @@ import UIKit
 import NotchBannersC
 
 class NBBannerController: UIViewController {
-    private var timer = Timer()
+    var timer = Timer()
     var bannerView: NBBannerView!
     var currentContentBlob: NBContent!
 
@@ -78,10 +78,10 @@ class NBBannerController: UIViewController {
             return
         }
         
-        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(postWindowKillRequest), userInfo: nil, repeats: false)
+        timer = Timer.scheduledTimer(timeInterval: localSettings.dismissTime, target: self, selector: #selector(postWindowKillRequest), userInfo: nil, repeats: false)
     }
     
     @objc func postWindowKillRequest() {
-        NBBannerManager.sharedInstance.dismissAllWindows()
+        NBBannerManager.sharedInstance.dismissBannerWindow((self.parent as! NBContainerController).associatedWindow)
     }
 }
