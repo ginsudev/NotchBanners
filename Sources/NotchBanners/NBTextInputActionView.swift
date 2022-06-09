@@ -16,7 +16,7 @@ class NBTextInputActionView: UITextField, UITextFieldDelegate {
         
         mainAction = action
         
-        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[1]
+        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[3]
         
         delegate = self
         backgroundColor = localSettings.colours[2]

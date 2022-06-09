@@ -101,7 +101,8 @@ func readPrefs() {
     localSettings.colouringStyle = dict.value(forKey: "colouringStyle") as? Int ?? 1
     localSettings.colours = [UIColor(hexString: dict.value(forKey: "bgColour") as? String ?? "#000000FF"),
                              UIColor(hexString: dict.value(forKey: "textColour") as? String ?? "#FEFFFEFF"),
-                             UIColor(hexString: dict.value(forKey: "buttonColour") as? String ?? "#7F7F7FFF")]
+                             UIColor(hexString: dict.value(forKey: "buttonColour") as? String ?? "#7F7F7FFF"),
+                             UIColor(hexString: dict.value(forKey: "buttonTextColour") as? String ?? "#FEFFFEFF")]
     localSettings.customWidth = dict.value(forKey: "customWidth") as? Bool ?? false
     localSettings.customWidthValue = dict.value(forKey: "customWidthValue") as? Double ?? 209.0
     localSettings.dismissTime = dict.value(forKey: "dismissTime") as? Double ?? 5.0

@@ -16,7 +16,7 @@ class NBActionButton: UIButton {
         
         mainAction = action
         
-        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[1]
+        let colour = action.isDestructiveAction ? UIColor.red : localSettings.colours[3]
         
         backgroundColor = localSettings.colours[2]
         clipsToBounds = true
