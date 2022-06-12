@@ -24,6 +24,11 @@ class NBBannerView: UIStackView {
     init(frame: CGRect, header headerText: String, title titleText: String, subtitle subtitleText: String, body bodyText: String, iconImage icon: UIImage, actions actionList: [NCNotificationAction]?) {
         super.init(frame: frame)
         
+        if localSettings.borderColours {
+            self.layer.borderColor = localSettings.colours[4].cgColor
+            self.layer.borderWidth = localSettings.borderWeight
+        }
+        
         let tapG = UITapGestureRecognizer(target: self, action: #selector(executeTapAction))
         tapG.numberOfTapsRequired = 1
         addGestureRecognizer(tapG)
@@ -55,6 +60,11 @@ class NBBannerView: UIStackView {
             
             for action in droppedActionList {
                 let actionButton = action.behavior == 1 ? NBTextInputActionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action) : NBActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
+                
+                if localSettings.borderColours {
+                    actionButton.layer.borderColor = localSettings.colours[5].cgColor
+                    actionButton.layer.borderWidth = localSettings.borderWeight
+                }
                 
                 actionButton.translatesAutoresizingMaskIntoConstraints = false
                 self.addArrangedSubview(actionButton)

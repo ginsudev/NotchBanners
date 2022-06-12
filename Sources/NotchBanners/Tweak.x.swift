@@ -8,6 +8,8 @@ struct localSettings {
     static var customWidth: Bool!
     static var customWidthValue: Double!
     static var dismissTime: Double!
+    static var borderColours: Bool!
+    static var borderWeight: Double!
 }
 
 struct tweak: HookGroup {}
@@ -43,7 +45,7 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
                 }
             }
         }
-
+        
         //Undo changes made by the system when recieving a notification banner. This fixes a bug that only lets us recieve 1 banner.
         target._test_dismiss(request)
         
@@ -102,10 +104,14 @@ func readPrefs() {
     localSettings.colours = [UIColor(hexString: dict.value(forKey: "bgColour") as? String ?? "#000000FF"),
                              UIColor(hexString: dict.value(forKey: "textColour") as? String ?? "#FEFFFEFF"),
                              UIColor(hexString: dict.value(forKey: "buttonColour") as? String ?? "#7F7F7FFF"),
-                             UIColor(hexString: dict.value(forKey: "buttonTextColour") as? String ?? "#FEFFFEFF")]
+                             UIColor(hexString: dict.value(forKey: "buttonTextColour") as? String ?? "#FEFFFEFF"),
+                             UIColor(hexString: dict.value(forKey: "bannerBorderColour") as? String ?? "#FEFFFEFF"),
+                             UIColor(hexString: dict.value(forKey: "buttonBorderColour") as? String ?? "#FEFFFEFF")]
     localSettings.customWidth = dict.value(forKey: "customWidth") as? Bool ?? false
     localSettings.customWidthValue = dict.value(forKey: "customWidthValue") as? Double ?? 209.0
     localSettings.dismissTime = dict.value(forKey: "dismissTime") as? Double ?? 5.0
+    localSettings.borderColours = dict.value(forKey: "borderColours") as? Bool ?? false
+    localSettings.borderWeight = dict.value(forKey: "borderWeight") as? Double ?? 2.0
     
 }
 
