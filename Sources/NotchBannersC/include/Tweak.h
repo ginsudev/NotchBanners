@@ -59,8 +59,6 @@
 @property (nonatomic,copy,readonly) NSDictionary * supplementaryActions;
 @property (nonatomic,readonly) NCNotificationContent * content;
 @property (nonatomic,readonly) NCNotificationOptions * options;
-@property (nonatomic,copy,readonly) NSArray * defaultEnvironmentActions;
-@property (nonatomic,copy,readonly) NSArray * minimalEnvironmentActions;
 @end
 
 @interface SBNotificationBannerDestination : NSObject

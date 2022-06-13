@@ -98,7 +98,8 @@ class NBBannerManager: NSObject {
                             "DEFAULT" : ScreenModel(notchWidth_mm: 1.00, screenWidth_mm: 1.00),         //Default
         ]
         
-        let lastActionMaxY: Double = (actions ?? 0 > 0) ? -(statusBarHeight + 3.0 + (Double(actions!) * 50.0) + (Double(actions!) * 3.0)) : 0.0
+        let buttonHeight: Double = localSettings.customButtonHeight ? localSettings.customButtonHeightValue : 50.0
+        let lastActionMaxY: Double = (actions ?? 0 > 0) ? -(statusBarHeight + 3.0 + (Double(actions!) * buttonHeight) + (Double(actions!) * 3.0)) : 0.0
         let currentModel = screenModels[UIDevice.current.modelName] ?? screenModels["DEFAULT"]
         let width = localSettings.customWidth ? localSettings.customWidthValue! : width(notchWidth: currentModel!.notchWidth_mm, screenWidth: currentModel!.screenWidth_mm)
         
@@ -144,8 +145,15 @@ class NBBannerManager: NSObject {
             return (brightness > 0.5) ? .black : .white
         }
         
-        coloursArray[0] = averageColor
-        coloursArray[1] = textColor
+        if localSettings.colouringStyle == 2 {
+            coloursArray[0] = averageColor
+            coloursArray[1] = textColor
+        }
+        
+        if localSettings.borderColourStyle == 2 {
+            coloursArray[4] = averageColor
+            coloursArray[5] = averageColor
+        }
         
         return coloursArray
     }

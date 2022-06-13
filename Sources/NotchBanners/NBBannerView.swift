@@ -19,14 +19,18 @@ class NBBannerView: UIStackView {
     private var openAppAction: NCNotificationAction?
     private var hasTopText = false
     private var insets = 10.0
+    private var buttonHeight = localSettings.customButtonHeight ? localSettings.customButtonHeightValue : 50.0
     var hasActions = false
     
     init(frame: CGRect, header headerText: String, title titleText: String, subtitle subtitleText: String, body bodyText: String, iconImage icon: UIImage, actions actionList: [NCNotificationAction]?) {
         super.init(frame: frame)
         
         if localSettings.borderColours {
-            self.layer.borderColor = localSettings.colours[4].cgColor
-            self.layer.borderWidth = localSettings.borderWeight
+            if (localSettings.bordersDarkModeOnly && UITraitCollection.current.userInterfaceStyle == .dark) || !localSettings.bordersDarkModeOnly {
+                self.layer.borderColor = localSettings.borderColourStyle == 2 ? localSettings.colours[4].withAlphaComponent(localSettings.adaptiveBorderAlpha).cgColor : localSettings.colours[4].cgColor
+                
+                self.layer.borderWidth = localSettings.bannerBorderWeight
+            }
         }
         
         let tapG = UITapGestureRecognizer(target: self, action: #selector(executeTapAction))
@@ -37,14 +41,14 @@ class NBBannerView: UIStackView {
             openAppAction = actionList?.first
         }
         
-        self.backgroundColor = localSettings.colours.first
+        self.backgroundColor = localSettings.colouringStyle == 2 ? localSettings.colours.first!.withAlphaComponent(localSettings.adaptiveBGAlpha) : localSettings.colours.first
         self.axis = .vertical
         self.alignment = .center
         self.distribution = .fill
         self.spacing = 3
         self.translatesAutoresizingMaskIntoConstraints = false
         self.clipsToBounds = true
-        self.layer.cornerRadius = 24
+        self.layer.cornerRadius = localSettings.customRadius ? localSettings.customRadiusValue : 24
         self.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         
         if let droppedActionList = actionList?.dropFirst() {
@@ -62,15 +66,15 @@ class NBBannerView: UIStackView {
                 let actionButton = action.behavior == 1 ? NBTextInputActionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action) : NBActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
                 
                 if localSettings.borderColours {
-                    actionButton.layer.borderColor = localSettings.colours[5].cgColor
-                    actionButton.layer.borderWidth = localSettings.borderWeight
+                    actionButton.layer.borderColor = localSettings.borderColourStyle == 2 ? localSettings.colours[5].withAlphaComponent(localSettings.adaptiveBorderAlpha).cgColor : localSettings.colours[5].cgColor
+                    actionButton.layer.borderWidth = localSettings.buttonBorderWeight
                 }
                 
                 actionButton.translatesAutoresizingMaskIntoConstraints = false
                 self.addArrangedSubview(actionButton)
                 //Constraints
                 actionButton.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
-                actionButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+                actionButton.heightAnchor.constraint(equalToConstant: buttonHeight!).isActive = true
             }
         }
         

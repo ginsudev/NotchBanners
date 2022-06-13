@@ -21,7 +21,7 @@ class NBTextInputActionView: UITextField, UITextFieldDelegate {
         delegate = self
         backgroundColor = localSettings.colours[2]
         clipsToBounds = true
-        layer.cornerRadius = 14
+        layer.cornerRadius = localSettings.customButtonRadius ? localSettings.customButtonRadiusValue : 14
         attributedPlaceholder = NSAttributedString(string: action.title, attributes: [NSAttributedString.Key.foregroundColor: colour])
         textColor = colour
         textAlignment = .center

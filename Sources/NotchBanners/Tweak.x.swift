@@ -9,7 +9,18 @@ struct localSettings {
     static var customWidthValue: Double!
     static var dismissTime: Double!
     static var borderColours: Bool!
-    static var borderWeight: Double!
+    static var bannerBorderWeight: Double!
+    static var buttonBorderWeight: Double!
+    static var bordersDarkModeOnly: Bool!
+    static var customButtonHeight: Bool!
+    static var customButtonHeightValue: Double!
+    static var adaptiveBGAlpha: Double!
+    static var borderColourStyle: Int!
+    static var adaptiveBorderAlpha: Double!
+    static var customRadius: Bool!
+    static var customButtonRadius: Bool!
+    static var customRadiusValue: Double!
+    static var customButtonRadiusValue: Double!
 }
 
 struct tweak: HookGroup {}
@@ -49,7 +60,7 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
         //Undo changes made by the system when recieving a notification banner. This fixes a bug that only lets us recieve 1 banner.
         target._test_dismiss(request)
         
-        if localSettings.colouringStyle == 2 {
+        if localSettings.colouringStyle == 2 || localSettings.borderColourStyle == 2 {
             if request.content.icon != nil {
                 localSettings.colours = NBBannerManager.sharedInstance.getAdaptiveColours(forImage: request.content.icon)
             }
@@ -111,8 +122,19 @@ func readPrefs() {
     localSettings.customWidthValue = dict.value(forKey: "customWidthValue") as? Double ?? 209.0
     localSettings.dismissTime = dict.value(forKey: "dismissTime") as? Double ?? 5.0
     localSettings.borderColours = dict.value(forKey: "borderColours") as? Bool ?? false
-    localSettings.borderWeight = dict.value(forKey: "borderWeight") as? Double ?? 2.0
-    
+    localSettings.bannerBorderWeight = dict.value(forKey: "bannerBorderWeight") as? Double ?? 2.0
+    localSettings.buttonBorderWeight = dict.value(forKey: "buttonBorderWeight") as? Double ?? 2.0
+    localSettings.bordersDarkModeOnly = dict.value(forKey: "bordersDarkModeOnly") as? Bool ?? false
+    localSettings.customButtonHeight = dict.value(forKey: "customButtonHeight") as? Bool ?? false
+    localSettings.customButtonHeightValue = dict.value(forKey: "customButtonHeightValue") as? Double ?? 50.0
+    localSettings.adaptiveBGAlpha = dict.value(forKey: "adaptiveBGAlpha") as? Double ?? 1.0
+    localSettings.borderColourStyle = dict.value(forKey: "borderColourStyle") as? Int ?? 1
+    localSettings.adaptiveBorderAlpha = dict.value(forKey: "adaptiveBorderAlpha") as? Double ?? 1.0
+    localSettings.customRadius = dict.value(forKey: "customRadius") as? Bool ?? false
+    localSettings.customRadiusValue = dict.value(forKey: "customRadiusValue") as? Double ?? 24.0
+    localSettings.customButtonRadius = dict.value(forKey: "customButtonRadius") as? Bool ?? false
+    localSettings.customButtonRadiusValue = dict.value(forKey: "customButtonRadiusValue") as? Double ?? 14.0
+
 }
 
 struct NotchBanners: Tweak {

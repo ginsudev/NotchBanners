@@ -20,7 +20,7 @@ class NBActionButton: UIButton {
         
         backgroundColor = localSettings.colours[2]
         clipsToBounds = true
-        layer.cornerRadius = 14
+        layer.cornerRadius = localSettings.customButtonRadius ? localSettings.customButtonRadiusValue : 14
         setTitle(action.title, for: .normal)
         setTitleColor(colour, for: .normal)
         titleLabel?.textAlignment = .center

@@ -24,10 +24,12 @@ class NBBannerController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        //Update frame
         var updatedFrame = self.view.frame
         updatedFrame.size.height = bannerView.frame.height
         updatedFrame.size.width = bannerView.frame.width
         self.view.frame = updatedFrame
+        self.view.center = CGPoint(x: self.parent!.view.center.x, y: self.view.center.y)
     }
     
     func createBanner(withContent content: NBContent) {

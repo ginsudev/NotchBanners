@@ -84,9 +84,10 @@ class NBContainerController: SBFTouchPassThroughViewController {
         var dismiss = false
         
         //Dismiss the banner
-        if bannerController!.view.frame.origin.y < (minY - offsetY) {
+        if (bannerController!.view.frame.origin.y < (minY - offsetY)) || (bannerController!.view.frame.origin.y >= UIScreen.main.bounds.height/2) {
             t_frame.origin.y = -bannerController!.view.frame.height
             dismiss = true
+            NBBannerManager.sharedInstance.thudSound()
         }
 
         //In this case, let's set the frame's yPos back to 0.
@@ -97,7 +98,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
         }
 
         //Expand the banner
-        if bannerController!.view.frame.origin.y > 50 {
+        if (bannerController!.view.frame.origin.y < UIScreen.main.bounds.height/2) && (bannerController!.view.frame.origin.y >= 50) {
             if bannerController!.bannerView.hasActions && !isExpanded {
                 t_frame.origin.y = 0.0
                 setExpanded(true)
@@ -105,7 +106,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
             } else {
                 t_frame.origin.y = minY
                 setExpanded(false)
-                dismiss = isExpanded ? false : true
+                dismiss = false
             }
             NBBannerManager.sharedInstance.thudSound()
         }
@@ -123,7 +124,7 @@ class NBContainerController: SBFTouchPassThroughViewController {
                 return
             }
 
-            //NBBannerManager.sharedInstance.dismissAllWindows()
+            NBBannerManager.sharedInstance.dismissBannerWindow(self.associatedWindow)
         })
     }
     
