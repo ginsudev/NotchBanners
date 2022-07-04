@@ -117,8 +117,8 @@ class NBContainerController: SBFTouchPassThroughViewController {
     func animateSetFrame(_ frame: CGRect, shouldDismiss dismiss: Bool) {
         UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.3, options: .curveEaseInOut, animations: {
             self.bannerController!.view.frame = frame
-        }, completion: { action in
             self.bannerController!.bannerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        }, completion: { action in
 
             guard dismiss else {
                 return

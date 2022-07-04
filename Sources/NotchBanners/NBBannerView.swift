@@ -62,19 +62,29 @@ class NBBannerView: UIStackView {
                 spacerTopTop.heightAnchor.constraint(equalToConstant: NBBannerManager.sharedInstance.statusBarHeight).isActive = true
             }
             
+            //Adding action buttons
             for action in droppedActionList {
-                let actionButton = action.behavior == 1 ? NBTextInputActionView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action) : NBActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
+                var button: NBButton
                 
-                if localSettings.borderColours {
-                    actionButton.layer.borderColor = localSettings.borderColourStyle == 2 ? localSettings.colours[5].withAlphaComponent(localSettings.adaptiveBorderAlpha).cgColor : localSettings.colours[5].cgColor
-                    actionButton.layer.borderWidth = localSettings.buttonBorderWeight
+                if action.behavior == 1 {
+                    button = NBTextInputActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
+                } else {
+                    button = NBTapActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
                 }
                 
-                actionButton.translatesAutoresizingMaskIntoConstraints = false
-                self.addArrangedSubview(actionButton)
-                //Constraints
-                actionButton.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
-                actionButton.heightAnchor.constraint(equalToConstant: buttonHeight!).isActive = true
+                button.translatesAutoresizingMaskIntoConstraints = false
+                
+                if localSettings.borderColours {
+                    if localSettings.borderColourStyle == 2 {
+                        button.layer.borderColor = localSettings.colours[5].withAlphaComponent(localSettings.adaptiveBorderAlpha).cgColor
+                    } else {
+                        button.layer.borderColor = localSettings.colours[5].cgColor
+                    }
+                    
+                    button.layer.borderWidth = localSettings.buttonBorderWeight
+                }
+                
+                addActionButton(button)
             }
         }
         
@@ -148,12 +158,18 @@ class NBBannerView: UIStackView {
         
     }
     
-    func textInputButton() -> NBTextInputActionView? {
-        for view in self.arrangedSubviews {
-            if view.responds(to: #selector(UITextFieldDelegate.textFieldDidBeginEditing(_:))) {
-                return (view as! NBTextInputActionView)
-            }
+    func addActionButton(_ button: NBButton) {
+        addArrangedSubview(button)
+        //Constraints
+        button.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
+        button.heightAnchor.constraint(equalToConstant: buttonHeight!).isActive = true
+    }
+    
+    func textInputButton() -> NBTextInputActionButton? {
+        if let textButton = arrangedSubviews.first(where: {$0 is NBTextInputActionButton}) as? NBTextInputActionButton {
+            return textButton
         }
+
         return nil
     }
     
