@@ -49,6 +49,7 @@
 @property (nonatomic,copy,readonly) NSString * title;
 @property (nonatomic,copy,readonly) NSString * subtitle;
 @property (nonatomic,copy,readonly) NSString * message;
+@property (nonatomic,readonly) UIImage * attachmentImage;
 @end
 
 @interface NCNotificationRequest : NSObject
@@ -70,6 +71,10 @@
 
 @interface SBFTouchPassThroughWindow : UIWindow
 - (instancetype)initWithScreen:(UIScreen *)arg1 debugName:(NSString *)arg2;
+@end
+
+@interface SBLockStateAggregator : NSObject
+- (unsigned long long)lockState;
 @end
 
 @interface UIStatusBarManager (Private)

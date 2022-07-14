@@ -17,6 +17,7 @@ struct NBContent {
     var icon: UIImage!
     var actions: [NCNotificationAction]?
     var dismissAutomatically: Bool!
+    var attachmentImage: UIImage?
 }
 
 /* An object that contains measurements for the screen and notch width,

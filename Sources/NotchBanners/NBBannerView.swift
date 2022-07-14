@@ -17,13 +17,24 @@ class NBBannerView: UIStackView {
     private var spacerTopTop: UIView!
     private var spacerBottom: UIView!
     private var openAppAction: NCNotificationAction?
+    private var attachmentImageView: UIImageView!
+    private var bottomContainer: UIView!
+    private var hasAttachments = false
     private var hasTopText = false
     private var insets = 10.0
+    private var imageSize: Double {
+        return hasAttachments ? 60.0 : 0.0
+    }
+    private var imageSpacing: Double {
+        return hasAttachments ? 3 : 0.0
+    }
     private var buttonHeight = localSettings.customButtonHeight ? localSettings.customButtonHeightValue : 50.0
     var hasActions = false
     
-    init(frame: CGRect, header headerText: String, title titleText: String, subtitle subtitleText: String, body bodyText: String, iconImage icon: UIImage, actions actionList: [NCNotificationAction]?) {
+    init(frame: CGRect, header headerText: String, title titleText: String, subtitle subtitleText: String, body bodyText: String, iconImage icon: UIImage, actions actionList: [NCNotificationAction]?, attachmentImage attachment: UIImage?) {
         super.init(frame: frame)
+        
+        hasAttachments = attachment != nil
         
         if localSettings.borderColours {
             if (localSettings.bordersDarkModeOnly && UITraitCollection.current.userInterfaceStyle == .dark) || !localSettings.bordersDarkModeOnly {
@@ -67,8 +78,10 @@ class NBBannerView: UIStackView {
                 var button: NBButton
                 
                 if action.behavior == 1 {
+                    //Expects text input, so add our text input action button instead of tap action button.
                     button = NBTextInputActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
                 } else {
+                    //Add tap action button.
                     button = NBTapActionButton(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50), actionBlob: action)
                 }
                 
@@ -94,6 +107,8 @@ class NBBannerView: UIStackView {
         //Constraints
         spacerTop.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         spacerTop.heightAnchor.constraint(equalToConstant: NBBannerManager.sharedInstance.statusBarHeight).isActive = true
+        
+        
 
         if headerText.count > 0 {
             hasTopText = true
@@ -118,7 +133,7 @@ class NBBannerView: UIStackView {
                 self.addArrangedSubview(titleLabel)
                 
                 //Constraints
-                titleLabel.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
+                titleLabel.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2) - imageSize - imageSpacing).isActive = true
                 titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: insets).isActive = true
             } else {
                 hasTopText = true
@@ -144,7 +159,7 @@ class NBBannerView: UIStackView {
             self.addArrangedSubview(bodyLabel)
             
             //Constraints
-            bodyLabel.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2)).isActive = true
+            bodyLabel.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -(insets*2) - imageSize - imageSpacing).isActive = true
             bodyLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: insets).isActive = true
         }
         
@@ -155,7 +170,20 @@ class NBBannerView: UIStackView {
         spacerBottom.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         spacerBottom.heightAnchor.constraint(equalToConstant: insets).isActive = true
         
-        
+        if hasAttachments {
+            attachmentImageView = UIImageView(image: attachment)
+            attachmentImageView.translatesAutoresizingMaskIntoConstraints = false
+            attachmentImageView.layer.cornerRadius = self.layer.cornerRadius - insets
+            attachmentImageView.clipsToBounds = true
+            attachmentImageView.contentMode = .scaleToFill
+            attachmentImageView.isUserInteractionEnabled = true
+            addSubview(attachmentImageView)
+            //Constraints
+            attachmentImageView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 3).isActive = true
+            attachmentImageView.bottomAnchor.constraint(equalTo: self.spacerBottom.topAnchor).isActive = true
+            attachmentImageView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -insets).isActive = true
+            attachmentImageView.widthAnchor.constraint(equalToConstant: imageSize).isActive = true
+        }
     }
     
     func addActionButton(_ button: NBButton) {

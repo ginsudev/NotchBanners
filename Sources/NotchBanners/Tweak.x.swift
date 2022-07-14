@@ -21,6 +21,7 @@ struct localSettings {
     static var customButtonRadius: Bool!
     static var customRadiusValue: Double!
     static var customButtonRadiusValue: Double!
+    static var showAttachments: Bool!
 }
 
 struct tweak: HookGroup {}
@@ -73,7 +74,8 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
                                 body: request.options.contentPreviewSetting != 2 ? (request.content.message ?? "") : (request.content.header ?? ""),
                                 icon: request.content.icon ?? UIImage(systemName: "app.badge.fill"),
                                 actions: actions,
-                                dismissAutomatically: request.options.dismissAutomatically)
+                                dismissAutomatically: request.options.dismissAutomatically,
+                                attachmentImage: (request.content.attachmentImage != nil && localSettings.showAttachments) ? request.content.attachmentImage : nil)
 
         //Create & present the banner with our content.
         NBBannerManager.sharedInstance.createBannerWindow(withContent: content)
@@ -89,10 +91,34 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
 }
 
 class DNDNotificationsService_Hook: ClassHook<DNDNotificationsService> {
-    
+    typealias Group = tweak
+
     func stateService(_ arg1: AnyObject, didReceiveDoNotDisturbStateUpdate update: DNDStateUpdate) {
         orig.stateService(arg1, didReceiveDoNotDisturbStateUpdate: update)
         UserDefaults.standard.set((update.state.isActive && update.state.suppressionState == 1), forKey: "NotchBanners_DND")
+    }
+}
+
+class SBLockStateAggregator_Hook: ClassHook<SBLockStateAggregator> {
+    typealias Group = tweak
+    
+    func _updateLockState() {
+        orig._updateLockState()
+        
+        /* Lock states
+         0 = Device unlocked and lock screen dismissed.
+         1 = Device unlocked and lock screen not dismissed.
+         2 = Locking... ??
+         3 = Locked.
+        */
+        
+        guard !NBBannerManager.sharedInstance.activeWindows.isEmpty else {
+            return
+        }
+        
+        if target.lockState() == 2 || target.lockState() == 3 {
+            NBBannerManager.sharedInstance.dismissAllWindows()
+        }
     }
 }
 
@@ -134,7 +160,7 @@ func readPrefs() {
     localSettings.customRadiusValue = dict.value(forKey: "customRadiusValue") as? Double ?? 24.0
     localSettings.customButtonRadius = dict.value(forKey: "customButtonRadius") as? Bool ?? false
     localSettings.customButtonRadiusValue = dict.value(forKey: "customButtonRadiusValue") as? Double ?? 14.0
-
+    localSettings.showAttachments = dict.value(forKey: "showAttachments") as? Bool ?? false
 }
 
 struct NotchBanners: Tweak {

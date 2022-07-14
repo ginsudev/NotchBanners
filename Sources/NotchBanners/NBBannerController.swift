@@ -44,7 +44,8 @@ class NBBannerController: UIViewController {
                                   subtitle: content.subtitle,
                                   body: content.body,
                                   iconImage: content.icon ?? UIImage(systemName: "app.badge.fill")!,
-                                  actions: content.actions)
+                                  actions: content.actions,
+                                  attachmentImage: content.attachmentImage)
         view.addSubview(bannerView)
         
         let frame_special_cache = NBBannerManager.sharedInstance.getOptimalBannerFrame(actionCount: currentContentBlob.actions?.dropFirst().count ?? 0)

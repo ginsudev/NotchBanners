@@ -61,7 +61,7 @@ class RootListController: PSListController {
                                 twitterHandle: "ginsudev",
                                 developerName: "Ginsu",
                                 tweakName: "NotchBanners",
-                                tweakVersion: "v2.2.2",
+                                tweakVersion: "v2.2.4",
                                 email: "njl02@outlook.com",
                                 discordURL: "https://discord.gg/BhdUyCbgkZ",
                                 donateURL: "https://paypal.me/xiaonuoya")
