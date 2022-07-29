@@ -3,7 +3,8 @@ import Foundation
 import notchbannersC
 
 class NBBehaviourController: PSListController {
-    
+    private var name = "notchbanners"
+
     override var specifiers: NSMutableArray? {
         get {
             if let specifiers = value(forKey: "_specifiers") as? NSMutableArray {
@@ -40,14 +41,16 @@ class NBBehaviourController: PSListController {
                 if array.contains(dynamicSpecifier) {
                     let shouldHide = shouldHideSpecifier(dynamicSpecifier)
                     
-                    let specifierCell: UITableViewCell = dynamicSpecifier.property(forKey: PSTableCellKey) as! UITableViewCell
-                    specifierCell.clipsToBounds = shouldHide
-                    
-                    if shouldHide {
-                        if !hiddenSpecifiers.contains(dynamicSpecifier) {
-                            hiddenSpecifiers.append(dynamicSpecifier)
+                    if let specifierCell: UITableViewCell = dynamicSpecifier.property(forKey: PSTableCellKey) as? UITableViewCell {
+                        specifierCell.clipsToBounds = shouldHide
+                        
+                        if shouldHide {
+                            if !hiddenSpecifiers.contains(dynamicSpecifier) {
+                                hiddenSpecifiers.append(dynamicSpecifier)
+                            }
+                            return 0
                         }
-                        return 0
+
                     }
                 } else {
                     if hiddenSpecifiers.contains(dynamicSpecifier) {
@@ -68,6 +71,24 @@ class NBBehaviourController: PSListController {
         let requiredValueString: String = components.last!
         let requiredValue = Int(requiredValueString)
         
+        //Hide for all values except one... Useful for list controllers.
+        if components.count == 3 {
+            let shouldStayVisible: Bool = components[1] == "s" //s for show, h for hide.
+            
+            if shouldStayVisible {
+                if hiddenSpecifiers.contains(opposingSpecifier!) {
+                    return true
+                }
+                
+                if opposingValue.intValue == requiredValue {
+                    return false
+                }
+                
+                return true
+            }
+        }
+        
+        //If there's no h or s in the dynamicRule, don't do anything fancy...
         return hiddenSpecifiers.contains(opposingSpecifier!) || opposingValue.intValue == requiredValue
     }
     
@@ -107,20 +128,45 @@ class NBBehaviourController: PSListController {
     }
     
     override func readPreferenceValue(_ specifier: PSSpecifier!) -> Any! {
-        let path = "/User/Library/Preferences/com.ginsu.notchbanners.plist"
-        let settings = NSMutableDictionary()
-        let pathDict = NSDictionary(contentsOfFile: path)
-        settings.addEntries(from: pathDict as! [AnyHashable : Any])
-        return ((settings[specifier.properties["key"]!]) != nil) ? settings[specifier.properties["key"]!] : specifier.properties["default"]
-    }
+        var propertyListFormat =  PropertyListSerialization.PropertyListFormat.xml
+        
+        let plistURL = URL(fileURLWithPath: "/User/Library/Preferences/com.ginsu.\(name).plist")
+
+        guard let plistXML = try? Data(contentsOf: plistURL) else {
+            return specifier.properties["default"]
+        }
+        
+        guard let plistDict = try! PropertyListSerialization.propertyList(from: plistXML, options: .mutableContainersAndLeaves, format: &propertyListFormat) as? [String : AnyObject] else {
+            return specifier.properties["default"]
+        }
+        
+        guard let value = plistDict[specifier.properties["key"] as! String] else {
+            return specifier.properties["default"]
+        }
+        
+        return value    }
     
     override func setPreferenceValue(_ value: Any!, specifier: PSSpecifier!) {
-        let path = "/User/Library/Preferences/com.ginsu.notchbanners.plist"
-        let settings = NSMutableDictionary()
-        let pathDict = NSDictionary(contentsOfFile: path)
-        settings.addEntries(from: pathDict as! [AnyHashable : Any])
-        settings.setObject(value!, forKey: specifier.properties["key"] as! NSCopying)
-        settings.write(toFile: path, atomically: true)
+        var propertyListFormat =  PropertyListSerialization.PropertyListFormat.xml
+        
+        let plistURL = URL(fileURLWithPath: "/User/Library/Preferences/com.ginsu.\(name).plist")
+
+        guard let plistXML = try? Data(contentsOf: plistURL) else {
+            return
+        }
+        
+        guard var plistDict = try! PropertyListSerialization.propertyList(from: plistXML, options: .mutableContainersAndLeaves, format: &propertyListFormat) as? [String : AnyObject] else {
+            return
+        }
+    
+        plistDict[specifier.properties["key"] as! String] = value! as AnyObject
+        
+        do {
+            let newData = try PropertyListSerialization.data(fromPropertyList: plistDict, format: propertyListFormat, options: 0)
+            try newData.write(to: plistURL)
+        } catch {
+            return
+        }
         
         if hasDynamicSpecifiers {
             if let specifierID = specifier.property(forKey: PSIDKey) as? String {
@@ -130,10 +176,16 @@ class NBBehaviourController: PSListController {
                     return
                 }
                 
-                self.table.beginUpdates()
-                self.table.endUpdates()
+                self.table.reloadData()
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.reloadSpecifiers()
+        self.table.reloadData()
     }
     
     override func tableViewStyle() -> UITableView.Style {

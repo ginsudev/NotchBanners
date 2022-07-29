@@ -62,8 +62,8 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
         target._test_dismiss(request)
         
         if localSettings.colouringStyle == 2 || localSettings.borderColourStyle == 2 {
-            if request.content.icon != nil {
-                localSettings.colours = NBBannerManager.sharedInstance.getAdaptiveColours(forImage: request.content.icon)
+            if let icon = request.content.icon {
+                localSettings.colours = icon.getAdaptiveColours()
             }
         }
 
@@ -82,10 +82,10 @@ class SBNotificationBannerDestination_Hook: ClassHook<SBNotificationBannerDestin
 
         /* Finally, create a ToneLibrary Alert (TLAlert) with the TLAlertConfiguration property
         found in the NCNotificationRequest's NCNotificationSound object. */
-        if let alertConfig = request.sound?.alertConfiguration {
+        if let alertConfig = request.sound?.alertConfiguration,
+            let tl_alert = TLAlert(configuration: alertConfig) {
             //Play banner sound.
-            let tl_alert = TLAlert(configuration: alertConfig)
-            tl_alert?.play()
+            tl_alert.play()
         }
     }
 }
@@ -95,7 +95,8 @@ class DNDNotificationsService_Hook: ClassHook<DNDNotificationsService> {
 
     func stateService(_ arg1: AnyObject, didReceiveDoNotDisturbStateUpdate update: DNDStateUpdate) {
         orig.stateService(arg1, didReceiveDoNotDisturbStateUpdate: update)
-        UserDefaults.standard.set((update.state.isActive && update.state.suppressionState == 1), forKey: "NotchBanners_DND")
+        UserDefaults.standard.set((update.state.isActive && update.state.suppressionState == 1),
+                                  forKey: "NotchBanners_DND")
     }
 }
 
@@ -123,44 +124,59 @@ class SBLockStateAggregator_Hook: ClassHook<SBLockStateAggregator> {
 }
 
 //MARK: - Preferences
-func readPrefs() {
+fileprivate func prefsDict() -> [String : AnyObject]? {
+    var propertyListFormat =  PropertyListSerialization.PropertyListFormat.xml
     
     let path = "/var/mobile/Library/Preferences/com.ginsu.notchbanners.plist"
     
     if !FileManager().fileExists(atPath: path) {
-        try? FileManager().copyItem(atPath: "Library/PreferenceBundles/notchbanners.bundle/defaults.plist", toPath: path)
+        try? FileManager().copyItem(atPath: "Library/PreferenceBundles/notchbanners.bundle/defaults.plist",
+                                    toPath: path)
     }
     
-    guard let dict = NSDictionary(contentsOfFile: path) else {
-        return
+    let plistURL = URL(fileURLWithPath: path)
+
+    guard let plistXML = try? Data(contentsOf: plistURL) else {
+        return nil
     }
+    
+    guard let plistDict = try! PropertyListSerialization.propertyList(from: plistXML, options: .mutableContainersAndLeaves, format: &propertyListFormat) as? [String : AnyObject] else {
+        return nil
+    }
+    
+    return plistDict
+}
+
+fileprivate func readPrefs() {
+    
+    let dict = prefsDict() ?? [String : AnyObject]()
     
     //Reading values
-    localSettings.isEnabled = dict.value(forKey: "isEnabled") as? Bool ?? true
-    localSettings.colouringStyle = dict.value(forKey: "colouringStyle") as? Int ?? 1
-    localSettings.colours = [UIColor(hexString: dict.value(forKey: "bgColour") as? String ?? "#000000FF"),
-                             UIColor(hexString: dict.value(forKey: "textColour") as? String ?? "#FEFFFEFF"),
-                             UIColor(hexString: dict.value(forKey: "buttonColour") as? String ?? "#7F7F7FFF"),
-                             UIColor(hexString: dict.value(forKey: "buttonTextColour") as? String ?? "#FEFFFEFF"),
-                             UIColor(hexString: dict.value(forKey: "bannerBorderColour") as? String ?? "#FEFFFEFF"),
-                             UIColor(hexString: dict.value(forKey: "buttonBorderColour") as? String ?? "#FEFFFEFF")]
-    localSettings.customWidth = dict.value(forKey: "customWidth") as? Bool ?? false
-    localSettings.customWidthValue = dict.value(forKey: "customWidthValue") as? Double ?? 209.0
-    localSettings.dismissTime = dict.value(forKey: "dismissTime") as? Double ?? 5.0
-    localSettings.borderColours = dict.value(forKey: "borderColours") as? Bool ?? false
-    localSettings.bannerBorderWeight = dict.value(forKey: "bannerBorderWeight") as? Double ?? 2.0
-    localSettings.buttonBorderWeight = dict.value(forKey: "buttonBorderWeight") as? Double ?? 2.0
-    localSettings.bordersDarkModeOnly = dict.value(forKey: "bordersDarkModeOnly") as? Bool ?? false
-    localSettings.customButtonHeight = dict.value(forKey: "customButtonHeight") as? Bool ?? false
-    localSettings.customButtonHeightValue = dict.value(forKey: "customButtonHeightValue") as? Double ?? 50.0
-    localSettings.adaptiveBGAlpha = dict.value(forKey: "adaptiveBGAlpha") as? Double ?? 1.0
-    localSettings.borderColourStyle = dict.value(forKey: "borderColourStyle") as? Int ?? 1
-    localSettings.adaptiveBorderAlpha = dict.value(forKey: "adaptiveBorderAlpha") as? Double ?? 1.0
-    localSettings.customRadius = dict.value(forKey: "customRadius") as? Bool ?? false
-    localSettings.customRadiusValue = dict.value(forKey: "customRadiusValue") as? Double ?? 24.0
-    localSettings.customButtonRadius = dict.value(forKey: "customButtonRadius") as? Bool ?? false
-    localSettings.customButtonRadiusValue = dict.value(forKey: "customButtonRadiusValue") as? Double ?? 14.0
-    localSettings.showAttachments = dict.value(forKey: "showAttachments") as? Bool ?? false
+    localSettings.isEnabled = dict["isEnabled"] as? Bool ?? true
+    localSettings.colouringStyle = dict["colouringStyle"] as? Int ?? 1
+    localSettings.colours = [UIColor(hexString: dict["bgColour"] as? String ?? "#000000FF"),
+                             UIColor(hexString: dict["textColour"] as? String ?? "#FEFFFEFF"),
+                             UIColor(hexString: dict["buttonColour"] as? String ?? "#7F7F7FFF"),
+                             UIColor(hexString: dict["buttonTextColour"] as? String ?? "#FEFFFEFF"),
+                             UIColor(hexString: dict["bannerBorderColour"] as? String ?? "#FEFFFEFF"),
+                             UIColor(hexString: dict["buttonBorderColour"] as? String ?? "#FEFFFEFF")]
+    localSettings.customWidth = dict["customWidth"] as? Bool ?? false
+    localSettings.customWidthValue = dict["customWidthValue"] as? Double ?? 209.0
+    localSettings.dismissTime = dict["dismissTime"] as? Double ?? 5.0
+    localSettings.borderColours = dict["borderColours"] as? Bool ?? false
+    localSettings.bannerBorderWeight = dict["bannerBorderWeight"] as? Double ?? 2.0
+    localSettings.buttonBorderWeight = dict["buttonBorderWeight"] as? Double ?? 2.0
+    localSettings.bordersDarkModeOnly = dict["bordersDarkModeOnly"] as? Bool ?? false
+    localSettings.customButtonHeight = dict["customButtonHeight"] as? Bool ?? false
+    localSettings.customButtonHeightValue = dict["customButtonHeightValue"] as? Double ?? 50.0
+    localSettings.adaptiveBGAlpha = dict["adaptiveBGAlpha"] as? Double ?? 1.0
+    localSettings.borderColourStyle = dict["borderColourStyle"] as? Int ?? 1
+    localSettings.adaptiveBorderAlpha = dict["adaptiveBorderAlpha"] as? Double ?? 1.0
+    localSettings.customRadius = dict["customRadius"] as? Bool ?? false
+    localSettings.customRadiusValue = dict["customRadiusValue"] as? Double ?? 24.0
+    localSettings.customButtonRadius = dict["customButtonRadius"] as? Bool ?? false
+    localSettings.customButtonRadiusValue = dict["customButtonRadiusValue"] as? Double ?? 14.0
+    localSettings.showAttachments = dict["showAttachments"] as? Bool ?? false
 }
 
 struct NotchBanners: Tweak {

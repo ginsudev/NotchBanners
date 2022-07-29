@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+	<array>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Colouring</string>
+            <key>footerText</key>
+            <string>Choose your own colours with the custom mode. Adaptive mode uses colours directly from the app icon.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>default</key>
+            <integer>1</integer>
+            <key>key</key>
+            <string>colouringStyle</string>
+            <key>validTitles</key>
+            <array>
+                <string>Custom</string>
+                <string>Adaptive</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <integer>1</integer>
+                <integer>2</integer>
+            </array>
+            <key>id</key>
+            <string>colourMode</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>GSColorPickerCell</string>
+            <key>fallbackHex</key>        <!-- This cell supports both of the hex formatting styles '#RRGGBBAA' -->
+            <string>#000000FF</string>    <!-- and '#RRGGBB:AA', but saves as only '#RRGGBBAA' -->
+            <key>supportsAlpha</key>      <!-- Enable or disable Alpha -->
+            <true/>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>key</key>
+            <string>bgColour</string>
+            <key>default</key>
+            <string>#000000FF</string>
+            <key>label</key>
+            <string>Background</string>
+            <key>dynamicRule</key>
+            <string>colourMode,2</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>GSColorPickerCell</string>
+            <key>fallbackHex</key>        <!-- This cell supports both of the hex formatting styles '#RRGGBBAA' -->
+            <string>#FFFFFFFF</string>  <!-- and '#RRGGBB:AA', but saves as only '#RRGGBBAA' -->
+            <key>supportsAlpha</key>      <!-- Enable or disable Alpha -->
+            <true/>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>key</key>
+            <string>textColour</string>
+            <key>default</key>
+            <string>#FFFFFFFF</string>
+            <key>label</key>
+            <string>Text</string>
+            <key>dynamicRule</key>
+            <string>colourMode,2</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>GSColorPickerCell</string>
+            <key>fallbackHex</key>        <!-- This cell supports both of the hex formatting styles '#RRGGBBAA' -->
+            <string>#7F7F7FFF</string>  <!-- and '#RRGGBB:AA', but saves as only '#RRGGBBAA' -->
+            <key>supportsAlpha</key>      <!-- Enable or disable Alpha -->
+            <true/>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>key</key>
+            <string>buttonColour</string>
+            <key>default</key>
+            <string>#7F7F7FFF</string>
+            <key>label</key>
+            <string>Buttons</string>
+            <key>dynamicRule</key>
+            <string>colourMode,2</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>GSColorPickerCell</string>
+            <key>fallbackHex</key>        <!-- This cell supports both of the hex formatting styles '#RRGGBBAA' -->
+            <string>#FFFFFFFF</string>  <!-- and '#RRGGBB:AA', but saves as only '#RRGGBBAA' -->
+            <key>supportsAlpha</key>      <!-- Enable or disable Alpha -->
+            <true/>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>key</key>
+            <string>buttonTextColour</string>
+            <key>default</key>
+            <string>#FFFFFFFF</string>
+            <key>label</key>
+            <string>Button text</string>
+            <key>dynamicRule</key>
+            <string>colourMode,2</string>
+        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>GSSliderCell</string>
+			<key>title</key>
+			<string>Background alpha</string>
+			<key>default</key>
+			<real>1</real>
+			<key>defaults</key>
+			<string>com.ginsu.notchbanners</string>
+			<key>key</key>
+			<string>adaptiveBGAlpha</string>
+			<key>min</key>
+			<real>0</real>
+			<key>max</key>
+			<real>1</real>
+            <key>dynamicRule</key>
+            <string>colourMode,1</string>
+		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerText</key>
+            <string>Choose colours for the banner and button borders.</string>
+        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>PSSubtitleSwitchTableCell</string>
+			<key>cellSubtitleText</key>
+			<string>Enable/Disable border colours</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.ginsu.notchbanners</string>
+			<key>key</key>
+			<string>borderColours</string>
+			<key>label</key>
+			<string>Borders</string>
+            <key>id</key>
+            <string>bordersStatus</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>PSSubtitleSwitchTableCell</string>
+			<key>cellSubtitleText</key>
+			<string>Only show banner's border in dark mode</string>
+            <key>height</key>
+            <integer>58</integer>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.ginsu.notchbanners</string>
+			<key>key</key>
+			<string>bordersDarkModeOnly</string>
+			<key>label</key>
+			<string>Dark mode only</string>
+            <key>dynamicRule</key>
+            <string>bordersStatus,0</string>
+		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>default</key>
+            <integer>1</integer>
+            <key>key</key>
+            <string>borderColourStyle</string>
+            <key>validTitles</key>
+            <array>
+                <string>Custom</string>
+                <string>Adaptive</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <integer>1</integer>
+                <integer>2</integer>
+            </array>
+            <key>height</key>
+            <integer>45</integer>
+            <key>dynamicRule</key>
+            <string>bordersStatus,0</string>
+            <key>id</key>
+            <string>borderColourStyleStatus</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>GSColorPickerCell</string>
+            <key>fallbackHex</key>        <!-- This cell supports both of the hex formatting styles '#RRGGBBAA' -->
+            <string>#FFFFFFFF</string>  <!-- and '#RRGGBB:AA', but saves as only '#RRGGBBAA' -->
+            <key>supportsAlpha</key>      <!-- Enable or disable Alpha -->
+            <true/>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>key</key>
+            <string>bannerBorderColour</string>
+            <key>default</key>
+            <string>#FFFFFFFF</string>
+            <key>label</key>
+            <string>Banner</string>
+            <key>dynamicRule</key>
+            <string>borderColourStyleStatus,2</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>GSColorPickerCell</string>
+            <key>fallbackHex</key>        <!-- This cell supports both of the hex formatting styles '#RRGGBBAA' -->
+            <string>#FFFFFFFF</string>  <!-- and '#RRGGBB:AA', but saves as only '#RRGGBBAA' -->
+            <key>supportsAlpha</key>      <!-- Enable or disable Alpha -->
+            <true/>
+            <key>defaults</key>
+            <string>com.ginsu.notchbanners</string>
+            <key>key</key>
+            <string>buttonBorderColour</string>
+            <key>default</key>
+            <string>#FFFFFFFF</string>
+            <key>label</key>
+            <string>Buttons</string>
+            <key>dynamicRule</key>
+            <string>borderColourStyleStatus,2</string>
+        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>GSSliderCell</string>
+			<key>title</key>
+			<string>Border alpha</string>
+			<key>default</key>
+			<real>1</real>
+			<key>defaults</key>
+			<string>com.ginsu.notchbanners</string>
+			<key>key</key>
+			<string>adaptiveBorderAlpha</string>
+			<key>min</key>
+			<real>0</real>
+			<key>max</key>
+			<real>1</real>
+            <key>dynamicRule</key>
+            <string>borderColourStyleStatus,1</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>GSSliderCell</string>
+			<key>title</key>
+			<string>Banner weight</string>
+			<key>default</key>
+			<real>2</real>
+			<key>defaults</key>
+			<string>com.ginsu.notchbanners</string>
+			<key>key</key>
+			<string>bannerBorderWeight</string>
+			<key>min</key>
+			<real>0</real>
+			<key>max</key>
+			<real>50</real>
+            <key>dynamicRule</key>
+            <string>bordersStatus,0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>GSSliderCell</string>
+			<key>title</key>
+			<string>Button weight</string>
+			<key>default</key>
+			<real>2</real>
+			<key>defaults</key>
+			<string>com.ginsu.notchbanners</string>
+			<key>key</key>
+			<string>buttonBorderWeight</string>
+			<key>min</key>
+			<real>0</real>
+			<key>max</key>
+			<real>50</real>
+            <key>dynamicRule</key>
+            <string>bordersStatus,0</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Appearance</string>
+</dict>
+</plist>
