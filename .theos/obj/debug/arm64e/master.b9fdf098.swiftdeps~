@@ -1,8 +1,0 @@
-version: "Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)"
-options: "36e974e8da2a77dfa3957152d6667bb1a7e9f084784e716ca32bacd7796a0367"
-build_start_time: [1659011110, 560611963]
-build_end_time: [1659011111, 131525039]
-inputs:
-  "Sources/notchbanners/NBAppearanceController.swift": [1659010838, 876626014]
-  "Sources/notchbanners/NBBehaviourController.swift": [1659010882, 278300523]
-  "Sources/notchbanners/RootListController.swift": [1659010952, 655952453]

@@ -1,4 +1,0 @@
-theos=/Users/noah/theos
-sdk=/Users/noah/theos/sdks/iPhoneOS14.4.sdk
-deploymentTarget=14
-swiftResourceDir=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/swift
